@@ -108,13 +108,44 @@ st.markdown(
             box-shadow: 0 0 8px rgba(102, 176, 255, 0.2);
         }
     }
+    
+    button[kind="secondary"] {
+        display: inline-block;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 16px;
+        cursor: pointer;
+        width: 18%;
+        position: fixed;
+        bottom: 115px; 
+        transform: translateX(20%);
+    }
+
+    button[kind="secondary"]:hover {
+        transition: 0.4s;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# 메인 제목 출력
-st.markdown("<div class='main-title'>책 지피티 - 주변 도서 안내 도우미</div>", unsafe_allow_html=True)
+# 채팅 메시지 출력 함수
+def send_chat_response(user_input):
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    response = "hello" # 임시 답변
+
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            #response = watsonx_ai(user_input)
+            st.write(response)
+
+    st.session_state.messages.append({"role": "assistant", "content": response})
+
+with st.sidebar:
+    st.write("사이드바")
 
 # 추천 질문 리스트
 recommended_questions = [
@@ -123,27 +154,48 @@ recommended_questions = [
     "특정 주제에 관한 도서가 있을까요?"
 ]
 
-# 추천 질문 영역 출력 (내부에 질문 리스트가 포함됨)
-st.markdown(
-    f"""
-    <div class="recommendation">
-        <strong>추천 질문</strong>
-        <ul>
-            {"".join(f"<li>{question}</li>" for question in recommended_questions)}
-        </ul>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+#세션 상태 변수 초기화
+if "messages" not in st.session_state: # 채팅 메시지 기록
+    st.session_state.messages = []
+
+if "user_input" not in st.session_state: # 사용자 입력
+    st.session_state.question = ""
+
+if "visibility" not in st.session_state: # 제목 & 추천 질문 영역 가시성
+    st.session_state.visibility = True
+
+# 질문이 한 번 들어오면 제목과 추천 질문 가시성을 False로 변경
+if st.session_state.visibility:
+    st.markdown("<div class='main-title'>책 지피티 - 주변 도서 안내 도우미</div>", unsafe_allow_html=True)
+    cols = st.columns(len(recommended_questions))  # 버튼을 가로로 배치
+    for i, question in enumerate(recommended_questions):
+        if cols[i].button(question):
+            st.session_state.question = question
+            st.session_state.visibility = False
+            send_chat_response(st.session_state.question)
+            st.rerun()
+
+# 저장된 채팅 기록을 화면에 표시
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
 # 하단 채팅 입력창 (고정 위치)
-st.markdown(
-    """
-    <div class="chat-input">
-        <form action="#" method="get">
-            <input type="text" name="user_input" placeholder="채팅을 입력하세요...">
-        </form>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+# st.markdown(
+#     """
+#     <div class="chat-input">
+#         <form action="#" method="get">
+#             <input type="text" name="user_input" placeholder="채팅을 입력하세요...">
+#         </form>
+#     </div>
+#     """,
+#     unsafe_allow_html=True,
+# )
+
+prompt = st.chat_input("질문을 입력하세요...")
+
+if prompt:
+    st.session_state.question = prompt
+    st.session_state.visibility = False
+    send_chat_response(st.session_state.question)
+    st.rerun()
