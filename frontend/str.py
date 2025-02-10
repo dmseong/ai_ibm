@@ -2,7 +2,7 @@ import streamlit as st
 import requests, json
 
 # 페이지 설정
-st.set_page_config(page_title="레시피 추천 챗봇", layout="wide")
+st.set_page_config(page_title="레시피 추천 챗봇", layout="wide", page_icon="green_salad")
 
 # 시스템 폰트와 다크/라이트 모드 대응 CSS 적용
 st.markdown(
@@ -68,13 +68,12 @@ if "visibility" not in st.session_state: # 제목 & 추천 질문 영역 가시�
 with st.sidebar:
     kcal = st.slider("원하는 칼로리", 10, 2000, 1000)
     st.write("원하는 칼로리는", kcal, "kcal 이하!")
-    st.subheader("", divider='grey')
 
 # LLM 호출 함수
 def watsonx_ai_api(user_input, kcal):
     payload = {"prompt": user_input, "kcal": kcal}
     try:
-        response_data = requests.post("http://localhost:8050/processing", json=payload, timeout=5)
+        response_data = requests.post("http://localhost:8050/processing", json=payload, timeout=8)
         response_data.raise_for_status()  # HTTP 오류 발생 시 예외 발생
         response = response_data.json()
         if "text" in response:
