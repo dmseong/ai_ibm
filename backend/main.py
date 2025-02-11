@@ -89,39 +89,30 @@ credentials = {
     "apikey": api_key,
 }
 
-
-model = create_llm(api_key, api_url, project_id)
-
-
 @app.post("/processing", description="prompt message",response_model = Message)
-def watsonx_ai_api(promptMessage: PromptMessage):
-    
-    response = model.generate(prompt=promptMessage.prompt)['results'][0]['generated_text'].strip()
-    print(response) 
-    msg = {"text": response}
-    
-    return msg
-
-@app.post("/testing1", description="prompt message",response_model = Message)
 def watsonx_ai_test1(promptMessage: PromptMessage):
     
     input = """
-            context : 질문에 대한 답을 한국어로 답해주세요.
-            input : {}
-            result : 
-            """.format(promptMessage)
+    질문에 대한 답을 한국어로 답해줘. 
+    같은 말을 반복하지 말아줘. 
+    내질문을 답에 넣지 말아줘."""
     
-    prompt = f"""{input}"""
+    prompt = f'''
+    {promptMessage}
     
     
-    response = model.generate(prompt=promptMessage.prompt)['results'][0]['generated_text'].strip()
-    print(response) 
-    msg = {"text": response}
+    {input}
+    '''
+    
+    response = send_to_watsonxai(prompts=[prompt], model_name="ibm/granite-3-8b-instruct", decoding_method="greedy", max_new_tokens=400,
+                              min_new_tokens=1, temperature=1, repetition_penalty=1.0)
+    
+    msg = {"text": response[0]}
     
     return msg
 
 def send_to_watsonxai(prompts,
-                    model_name="meta-llama/llama-3-70b-instruct",
+                    model_name,
                     decoding_method="greedy",
                     max_new_tokens=100,
                     min_new_tokens=30,
@@ -129,19 +120,6 @@ def send_to_watsonxai(prompts,
                     repetition_penalty=1.0,
                     stop_sequence=['\n\n']
                     ):
-    '''
-   프롬프트 및 매개 변수를 watsonx.ai로 보내기 위한 function
-    
-    Args:  
-        prompts: 텍스트 프롬프트
-        decoding_method: "sample" or "greedy"
-        max_new_token:int watsonx.ai parameter for max new tokens/response returned
-        temperature:float watsonx.ai parameter for temperature (range 0>2)
-        repetition_penalty:float watsonx.ai parameter for repetition penalty (range 1.0 to 2.0)
-
-    Returns: None
-        prints response
-    '''
 
     assert not any(map(lambda prompt: len(prompt) < 1, prompts)), "make sure none of the prompts in the inputs prompts are empty"
 
@@ -162,7 +140,7 @@ def send_to_watsonxai(prompts,
         credentials=credentials,
         project_id=project_id)
 
-    response = model.generate_text(prompt = prompt)
+    response = model.generate_text(prompt = prompts)
 
     return response  
 
