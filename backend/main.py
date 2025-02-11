@@ -115,7 +115,7 @@ def watsonx_ai_test1(promptMessage: PromptMessage):
                               min_new_tokens=1, temperature=1, repetition_penalty=1.0)
     
     msg = {"text": response[0]}
-    
+
     return msg
 
 def send_to_watsonxai(prompts,
