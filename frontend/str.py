@@ -2,7 +2,7 @@ import streamlit as st
 import requests, json
 
 # 페이지 설정
-st.set_page_config(page_title="레시피 추천 챗봇", layout="wide", page_icon="green_salad")
+st.set_page_config(page_title="Refresh Chat", layout="wide", page_icon="green_salad")
 
 # 시스템 폰트와 다크/라이트 모드 대응 CSS 적용
 st.markdown(
@@ -107,7 +107,9 @@ recommended_questions = [
 
 # 질문이 한 번 들어오면 제목과 추천 질문 가시성을 False로 변경
 if st.session_state.visibility:
-    st.markdown("<div class='main-title'>레시피 추천 챗봇</div>", unsafe_allow_html=True)
+    st.markdown("""<div class='main-title'>
+                <span style="color: #7DB249;">R</span>efresh-<span style="color: #7DB249;">C</span>hat
+                : 저속노화 레시피 추천</div>""", unsafe_allow_html=True)
     cols = st.columns(len(recommended_questions))  # 버튼을 가로로 배치
     for i, question in enumerate(recommended_questions):
         if cols[i].button(question):
