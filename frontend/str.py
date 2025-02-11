@@ -73,7 +73,7 @@ with st.sidebar:
 def watsonx_ai_api(user_input, kcal):
     payload = {"prompt": user_input, "kcal": kcal}
     try:
-        response_data = requests.post("http://localhost:8050/processing", json=payload, timeout=8)
+        response_data = requests.post("http://localhost:8050/processing", json=payload, timeout=15)
         response_data.raise_for_status()  # HTTP 오류 발생 시 예외 발생
         response = response_data.json()
         if "text" in response:
