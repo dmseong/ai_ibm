@@ -12,6 +12,7 @@ from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
 from ibm_watsonx_ai.foundation_models import ModelInference
 from ibm_watsonx_ai.foundation_models.utils.enums import DecodingMethods
 from model import Message, PromptMessage
+from ibm_watsonx_ai.foundation_models import Model
 
 from dotenv import load_dotenv
 
@@ -83,6 +84,11 @@ api_key = os.environ["API_KEY"]
 api_url = os.environ["API_URL"]
 project_id = os.environ["PROJECT_ID"]
 
+credentials = {
+    "url" : api_url,
+    "apikey": api_key,
+}
+
 
 model = create_llm(api_key, api_url, project_id)
 
@@ -95,3 +101,68 @@ def watsonx_ai_api(promptMessage: PromptMessage):
     msg = {"text": response}
     
     return msg
+
+@app.post("/testing1", description="prompt message",response_model = Message)
+def watsonx_ai_test1(promptMessage: PromptMessage):
+    
+    input = """
+            context : 질문에 대한 답을 한국어로 답해주세요.
+            input : {}
+            result : 
+            """.format(promptMessage)
+    
+    prompt = f"""{input}"""
+    
+    
+    response = model.generate(prompt=promptMessage.prompt)['results'][0]['generated_text'].strip()
+    print(response) 
+    msg = {"text": response}
+    
+    return msg
+
+def send_to_watsonxai(prompts,
+                    model_name="meta-llama/llama-3-70b-instruct",
+                    decoding_method="greedy",
+                    max_new_tokens=100,
+                    min_new_tokens=30,
+                    temperature=1.0,
+                    repetition_penalty=1.0,
+                    stop_sequence=['\n\n']
+                    ):
+    '''
+   프롬프트 및 매개 변수를 watsonx.ai로 보내기 위한 function
+    
+    Args:  
+        prompts: 텍스트 프롬프트
+        decoding_method: "sample" or "greedy"
+        max_new_token:int watsonx.ai parameter for max new tokens/response returned
+        temperature:float watsonx.ai parameter for temperature (range 0>2)
+        repetition_penalty:float watsonx.ai parameter for repetition penalty (range 1.0 to 2.0)
+
+    Returns: None
+        prints response
+    '''
+
+    assert not any(map(lambda prompt: len(prompt) < 1, prompts)), "make sure none of the prompts in the inputs prompts are empty"
+
+    # Instantiate parameters for text generation
+    model_params = {
+        GenParams.DECODING_METHOD: decoding_method,
+        GenParams.MIN_NEW_TOKENS: min_new_tokens,
+        GenParams.MAX_NEW_TOKENS: max_new_tokens,
+        GenParams.RANDOM_SEED: 42,
+        GenParams.TEMPERATURE: temperature,
+        GenParams.REPETITION_PENALTY: repetition_penalty,
+    }
+    
+    # Instantiate a model proxy object to send your requests
+    model = Model(
+        model_id=model_name,
+        params=model_params,
+        credentials=credentials,
+        project_id=project_id)
+
+    response = model.generate_text(prompt = prompt)
+
+    return response  
+
