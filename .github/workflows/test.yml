@@ -14,16 +14,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 2. SSH 비공개 키 설정
-    - name: Set up SSH private key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Save SSH Private Key
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
 
     # 3. 서버에 접속하여 Docker Compose로 애플리케이션 배포
     - name: Deploy with Docker Compose
       run: |
-        ssh -o StrictHostKeyChecking=no ibmuser01@165.192.86.245 << 'EOF'
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ibmuser03@165.192.86.245 << 'EOF'
           cd /home/ibmuser01/ai_ibm
           docker-compose down 
           docker-compose pull 
