@@ -14,17 +14,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up SSH private key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+    # 2. sshpass 설치 (비밀번호 기반 SSH 사용)
+    - name: Install sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
 
     # 3. 서버에 접속하여 Docker Compose로 애플리케이션 배포
-    - name: Deploy with Docker Compose
+    - name: Deploy with SSH and Password
       run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ibmuser03@165.192.86.245 << 'EOF'
-          cd /home/ibmuser03/ai_ibm
+        sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd /home/${{ secrets.SSH_USER }}/ai_ibm
           docker-compose down 
           docker-compose pull 
           docker-compose up -d --remove-orphans 
