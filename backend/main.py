@@ -111,12 +111,8 @@ def watsonx_ai_test1(promptMessage: PromptMessage):
     {input}
     '''
     
-    print(prompt)
-    
     response = send_to_watsonxai(prompts=[prompt], model_name="ibm/granite-3-8b-instruct", decoding_method="greedy", max_new_tokens=1000,
                               min_new_tokens=1, temperature=1, repetition_penalty=1.0)
-    
-    print(response[0])
     
     msg = {"text": response[0]}
     
