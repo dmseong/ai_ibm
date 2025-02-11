@@ -12,7 +12,6 @@ from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
 from ibm_watsonx_ai.foundation_models import ModelInference
 from ibm_watsonx_ai.foundation_models.utils.enums import DecodingMethods
 from model import Message, PromptMessage
-from ibm_watsonx_ai.foundation_models import Model
 
 from dotenv import load_dotenv
 
@@ -95,7 +94,15 @@ def watsonx_ai_test1(promptMessage: PromptMessage):
     input = """
     질문에 대한 답을 한국어로 답해줘. 
     같은 말을 반복하지 말아줘. 
-    내질문을 답에 넣지 말아줘."""
+    내질문을 답에 넣지 말아줘.
+    kcal 밑으로 나오는 레시피로 알려줘.
+    
+    
+    답변 방식은
+    첫번째 레시피 - ...
+    두번째 레시피 - ...
+
+    """
     
     prompt = f'''
     {promptMessage}
@@ -104,8 +111,12 @@ def watsonx_ai_test1(promptMessage: PromptMessage):
     {input}
     '''
     
-    response = send_to_watsonxai(prompts=[prompt], model_name="ibm/granite-3-8b-instruct", decoding_method="greedy", max_new_tokens=400,
+    print(prompt)
+    
+    response = send_to_watsonxai(prompts=[prompt], model_name="ibm/granite-3-8b-instruct", decoding_method="greedy", max_new_tokens=1000,
                               min_new_tokens=1, temperature=1, repetition_penalty=1.0)
+    
+    print(response[0])
     
     msg = {"text": response[0]}
     
@@ -134,7 +145,7 @@ def send_to_watsonxai(prompts,
     }
     
     # Instantiate a model proxy object to send your requests
-    model = Model(
+    model = ModelInference(
         model_id=model_name,
         params=model_params,
         credentials=credentials,
