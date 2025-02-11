@@ -89,8 +89,6 @@ def send_chat_response(user_input, kcal):
     with st.chat_message("user"):
         st.markdown(user_input)
 
-    # response = "hello" # 임시 답변
-
     with st.chat_message("assistant"):
         with st.spinner("Making..."):
             response = watsonx_ai_api(user_input, kcal)
