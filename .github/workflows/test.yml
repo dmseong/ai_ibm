@@ -23,8 +23,6 @@ jobs:
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd /home/${{ secrets.SSH_USER }}/ai_ibm
-          sudo mkdir -p /etc/nginx/logs
-          sudo touch /etc/nginx/logs/access.log /etc/nginx/logs/error.log
           git pull origin main
           docker compose down
           docker system prune -f
