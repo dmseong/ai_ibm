@@ -10,7 +10,7 @@ services:
       - streamlit
 
   streamlit:
-    image: streamlit:latest
+    build: ./frontend
     container_name: streamlit
     ports:
       - "8001:8001"
@@ -19,7 +19,7 @@ services:
     command: streamlit run /app/app.py --server.port 8001
 
   fastapi:
-    image: fastapi:latest
+    build: ./backend
     container_name: fastapi
     ports:
       - "8050:8050"
