@@ -96,7 +96,7 @@ def send_chat_response(user_input, kcal):
     with st.chat_message("assistant"):
         with st.spinner("Making..."):
             response = watsonx_ai_api(user_input, kcal)
-            st.write(response)
+            st.markdown(response)
 
     st.session_state.messages.append({"role": "assistant", "content": response})
 
