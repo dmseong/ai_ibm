@@ -3,7 +3,6 @@ from fastapi import FastAPI, Request, BackgroundTasks
 # CORS 정책
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import os
 from fastapi import FastAPI, Form
 from dotenv import load_dotenv
 from ibm_watsonx_ai import Credentials
@@ -13,7 +12,6 @@ from ibm_watsonx_ai.foundation_models import ModelInference
 from ibm_watsonx_ai.foundation_models.utils.enums import DecodingMethods
 from model import Message, PromptMessage
 
-from dotenv import load_dotenv
 
 # swagger 페이지 소개
 SWAGGER_HEADERS = {
@@ -90,9 +88,7 @@ credentials = {
 
 @app.post("/api/processing", description="prompt message",response_model = Message)
 def watsonx_ai_test1(promptMessage: PromptMessage):
-    
-    print(promptMessage)
-    
+
     input = """
     Context : 삼중따옴표로 구분된 텍스트가 제공됩니다. 아래의 규칙을 지켜 답변해주세요.
     
