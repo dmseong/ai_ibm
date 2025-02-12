@@ -70,7 +70,7 @@ with st.sidebar:
     st.write("원하는 칼로리는", kcal, "kcal 이하!")
 
 # LLM 호출 함수
-def watsonx_ai_api(user_input, kcal):
+def watsonx_ai_api(user_input, kcal:int):
     payload = {"prompt": user_input, "kcal": kcal}
     try:
         response_data = requests.post("http://localhost:8050/processing", json=payload, timeout=30)
