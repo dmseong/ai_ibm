@@ -88,7 +88,7 @@ credentials = {
     "apikey": api_key,
 }
 
-@app.post("/processing", description="prompt message",response_model = Message)
+@app.post("/api/processing", description="prompt message",response_model = Message)
 def watsonx_ai_test1(promptMessage: PromptMessage):
     
     print(promptMessage)
