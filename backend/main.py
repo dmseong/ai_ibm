@@ -90,7 +90,7 @@ credentials = {
 def watsonx_ai_test1(promptMessage: PromptMessage):
 
     input = """
-    Context : 삼중따옴표로 구분된 텍스트가 제공됩니다. 아래의 규칙을 지켜 답변해주세요.
+    Context : 삼중따옴표로 구분된 텍스트가 제공됩니다. 아래의 규칙을 지켜 답변해주세요. **절대 같은 단어를 반복하지 마세요.**
     
     - 질문에 대한 답을 한국어로 답변해주세요.  
     - 질문 내용을 답변에 포함하지 말아주세요.  
