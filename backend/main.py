@@ -91,6 +91,8 @@ credentials = {
 @app.post("/processing", description="prompt message",response_model = Message)
 def watsonx_ai_test1(promptMessage: PromptMessage):
     
+    print(promptMessage)
+    
     input = """
     Context : 삼중따옴표로 구분된 텍스트가 제공됩니다. 아래의 규칙을 지켜 답변해주세요.
     

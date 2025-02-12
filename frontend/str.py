@@ -72,6 +72,8 @@ with st.sidebar:
 # LLM 호출 함수
 def watsonx_ai_api(user_input, kcal:int):
     payload = {"prompt": user_input, "kcal": kcal}
+    print(payload)
+    print(type(kcal))
     try:
         response_data = requests.post("http://localhost:8050/processing", json=payload, timeout=30)
         response_data.raise_for_status()  # HTTP 오류 발생 시 예외 발생
