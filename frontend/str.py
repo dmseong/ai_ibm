@@ -83,10 +83,7 @@ def watsonx_ai_api(user_input, kcal:int):
         else:
             return "답변을 가져올 수 없습니다."
     except requests.exceptions.RequestException:
-        payload = {"prompt": user_input, "kcal": kcal}
-        print(payload)
-        print(type(kcal))
-        return "서버와의 연결이 원활하지 않습니다."
+        return "{}, {} ,서버와의 연결이 원활하지 않습니다.".format(payload,type(kcal))
 
 # 채팅 메시지 출력 함수
 def send_chat_response(user_input, kcal):
