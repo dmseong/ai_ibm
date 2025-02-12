@@ -66,8 +66,12 @@ if "visibility" not in st.session_state: # 제목 & 추천 질문 영역 가시�
     st.session_state.visibility = True
 
 with st.sidebar:
-    kcal = st.slider("원하는 칼로리", 10, 2000, 1000)
+    kcal = st.slider("원하는 칼로리", 100, 2000, 1000)
     st.write("원하는 칼로리는", kcal, "kcal 이하!")
+    st.markdown("""<div style="margin-top: 370px";>
+                <span>사용 중인 모델</span>""", unsafe_allow_html=True)
+    st.success("IBM/Granite-3-8b-instruct")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # LLM 호출 함수
 def watsonx_ai_api(user_input, kcal:int):
