@@ -24,7 +24,7 @@ jobs:
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd /home/${{ secrets.SSH_USER }}/ai_ibm
           git pull origin main
-          docker compose down 
-          docker compose pull 
-          docker compose up -d --remove-orphans 
+          docker compose down
+          docker system prune -f
+          docker compose up -d --build
         EOF
