@@ -122,7 +122,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # 사용자 입력을 받는 채팅 입력창
-prompt = st.chat_input("질문을 입력하세요...")
+prompt = st.chat_input("계란, 두부로 만들 수 있는 요리 알려줘")
 
 if prompt:
     st.session_state.question = prompt
